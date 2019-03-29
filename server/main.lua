@@ -1,4 +1,5 @@
-ESX              = nil
+ESX = nil
+
 local Categories = {}
 local Vehicles   = {}
 
@@ -43,7 +44,7 @@ MySQL.ready(function()
 end)
 
 RegisterServerEvent('esx_truckshop:setVehicleOwned')
-AddEventHandler('esx_truckshop:setVehicleOwned', function (vehicleProps)
+AddEventHandler('esx_truckshop:setVehicleOwned', function(vehicleProps)
 	local _source = source
 	local xPlayer = ESX.GetPlayerFromId(_source)
 
@@ -53,20 +54,20 @@ AddEventHandler('esx_truckshop:setVehicleOwned', function (vehicleProps)
 		['@plate']   = vehicleProps.plate,
 		['@vehicle'] = json.encode(vehicleProps),
 		['@Type']    = 'car'
-	}, function (rowsChanged)
+	}, function(rowsChanged)
 		TriggerClientEvent('esx:showNotification', _source, _U('truck_belongs', vehicleProps.plate))
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_truckshop:getCategories', function (source, cb)
+ESX.RegisterServerCallback('esx_truckshop:getCategories', function(source, cb)
 	cb(Categories)
 end)
 
-ESX.RegisterServerCallback('esx_truckshop:getVehicles', function (source, cb)
+ESX.RegisterServerCallback('esx_truckshop:getVehicles', function(source, cb)
 	cb(Vehicles)
 end)
 
-ESX.RegisterServerCallback('esx_truckshop:buyVehicle', function (source, cb, vehicleModel)
+ESX.RegisterServerCallback('esx_truckshop:buyVehicle', function(source, cb, vehicleModel)
 	local xPlayer     = ESX.GetPlayerFromId(source)
 	local vehicleData = nil
 
@@ -85,7 +86,7 @@ ESX.RegisterServerCallback('esx_truckshop:buyVehicle', function (source, cb, veh
 	end
 end)
 
-ESX.RegisterServerCallback('esx_truckshop:resellVehicle', function (source, cb, plate, model)
+ESX.RegisterServerCallback('esx_truckshop:resellVehicle', function(source, cb, plate, model)
 	local resellPrice = 0
 
 	-- calculate the resell price
@@ -106,14 +107,13 @@ ESX.RegisterServerCallback('esx_truckshop:resellVehicle', function (source, cb, 
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE owner = @owner AND @plate = plate', {
 		['@owner'] = xPlayer.identifier,
 		['@plate'] = plate
-	}, function (result)
+	}, function(result)
 		if result[1] then -- does the owner match?
 			local vehicle = json.decode(result[1].vehicle)
 			if vehicle.model == model then
 				if vehicle.plate == plate then
 					xPlayer.addMoney(resellPrice)
 					RemoveOwnedVehicle(plate)
-					
 					cb(true)
 				else
 					print(('esx_truckshop: %s attempted to sell an vehicle with plate mismatch!'):format(xPlayer.identifier))
@@ -129,22 +129,22 @@ ESX.RegisterServerCallback('esx_truckshop:resellVehicle', function (source, cb, 
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_truckshop:isPlateTaken', function (source, cb, plate)
+ESX.RegisterServerCallback('esx_truckshop:isPlateTaken', function(source, cb, plate)
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE plate = @plate', {
 		['@plate'] = plate
-	}, function (result)
+	}, function(result)
 		cb(result[1] ~= nil)
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_truckshop:retrieveJobVehicles', function (source, cb, type)
+ESX.RegisterServerCallback('esx_truckshop:retrieveJobVehicles', function(source, cb, type)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE owner = @owner AND type = @type AND job = @job', {
 		['@owner'] = xPlayer.identifier,
 		['@type'] = type,
 		['@job'] = xPlayer.job.name
-	}, function (result)
+	}, function(result)
 		cb(result)
 	end)
 end)
