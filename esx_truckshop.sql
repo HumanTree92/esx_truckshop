@@ -11,8 +11,7 @@ INSERT INTO `truck_categories` (name, label) VALUES
 	('haul','Haulers'),
 	('box','Boxed Trucks'),
 	('trans','Transport Trucks'),
-	('other','Other Trucks'),
-	('customtrucks','Custom Trucks')
+	('other','Other Trucks')
 ;
 
 CREATE TABLE `trucks` (
@@ -51,10 +50,5 @@ INSERT INTO `trucks` (name, model, price, category) VALUES
 	('Rubble', 'rubble', 30000, 'other'),
 	('Scrap Truck', 'scrap', 10000, 'other'),
 	('Tipper 1', 'tiptruck', 30000, 'other'),
-	('Tipper 2', 'tiptruck2', 30000, 'other'),
-	('Kenworth T440 Dump', 'kenwort40d', 125000, 'customtrucks'),
-	('Kenworth T440 Box', 'kenwort40b', 125000, 'customtrucks'),
-	('Kenworth T660', 'kenwort60s', 130000, 'customtrucks'),
-	('Kenworth T700', 'kenwort70s', 135000, 'customtrucks'),
-	('Peterbilt 289', 'petbilt289', 140000, 'customtrucks')
+	('Tipper 2', 'tiptruck2', 30000, 'other')
 ;
