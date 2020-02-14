@@ -1,27 +1,9 @@
-local Keys = {
-  ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
-  ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
-  ["TAB"] = 37, ["Q"] = 44, ["W"] = 32, ["E"] = 38, ["R"] = 45, ["T"] = 245, ["Y"] = 246, ["U"] = 303, ["P"] = 199, ["["] = 39, ["]"] = 40, ["ENTER"] = 18,
-  ["CAPS"] = 137, ["A"] = 34, ["S"] = 8, ["D"] = 9, ["F"] = 23, ["G"] = 47, ["H"] = 74, ["K"] = 311, ["L"] = 182,
-  ["LEFTSHIFT"] = 21, ["Z"] = 20, ["X"] = 73, ["C"] = 26, ["V"] = 0, ["B"] = 29, ["N"] = 249, ["M"] = 244, [","] = 82, ["."] = 81,
-  ["LEFTCTRL"] = 36, ["LEFTALT"] = 19, ["SPACE"] = 22, ["RIGHTCTRL"] = 70,
-  ["HOME"] = 213, ["PAGEUP"] = 10, ["PAGEDOWN"] = 11, ["DELETE"] = 178,
-  ["LEFT"] = 174, ["RIGHT"] = 175, ["TOP"] = 27, ["DOWN"] = 173,
-  ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
-}
+local HasAlreadyEnteredMarker, IsInShopMenu = false, false
+local LastZone, CurrentAction, CurrentVehicleData = nil, nil, nil
+local CurrentActionMsg = ''
+local CurrentActionData, Categories, Vehicles, LastVehicles = {}, {}, {}, {}
 
-local HasAlreadyEnteredMarker = false
-local LastZone                = nil
-local CurrentAction           = nil
-local CurrentActionMsg        = ''
-local CurrentActionData       = {}
-local IsInShopMenu            = false
-local Categories              = {}
-local Vehicles                = {}
-local LastVehicles            = {}
-local CurrentVehicleData      = nil
-
-ESX                           = nil
+ESX = nil
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -142,8 +124,7 @@ function OpenShopMenu()
 			elements = {
 				{label = _U('no'),  value = 'no'},
 				{label = _U('yes'), value = 'yes'}
-			}
-		}, function(data2, menu2)
+			}}, function(data2, menu2)
 			if data2.current.value == 'yes' then
 				local playerData = ESX.GetPlayerData()
 					ESX.TriggerServerCallback('esx_truckshop:buyVehicle', function(hasEnoughMoney)
@@ -232,12 +213,12 @@ function WaitForVehicleToLoad(modelHash)
 		while not HasModelLoaded(modelHash) do
 			Citizen.Wait(1)
 
-			DisableControlAction(0, Keys['TOP'], true)
-			DisableControlAction(0, Keys['DOWN'], true)
-			DisableControlAction(0, Keys['LEFT'], true)
-			DisableControlAction(0, Keys['RIGHT'], true)
+			DisableControlAction(0, 27, true)
+			DisableControlAction(0, 173, true)
+			DisableControlAction(0, 174, true)
+			DisableControlAction(0, 175, true)
 			DisableControlAction(0, 176, true) -- ENTER key
-			DisableControlAction(0, Keys['BACKSPACE'], true)
+			DisableControlAction(0, 177, true)
 
 			drawLoadingText(_U('shop_awaiting_model'), 255, 255, 255, 255)
 		end
@@ -387,7 +368,7 @@ Citizen.CreateThread(function()
 		else
 			ESX.ShowHelpNotification(CurrentActionMsg)
 
-			if IsControlJustReleased(0, Keys['E']) then
+			if IsControlJustReleased(0, 38) then
 				if CurrentAction == 'shop_menu' then
 					if Config.LicenseEnable then
 						ESX.TriggerServerCallback('esx_license:checkLicense', function(hasCommercialLicense)
